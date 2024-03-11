@@ -5,6 +5,7 @@ import {
   editContacts,
   getAllContacts,
 } from './operations';
+
 const initialState = { items: [], isLoading: false, error: null };
 
 const getActions = type =>

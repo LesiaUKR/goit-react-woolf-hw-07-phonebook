@@ -1,35 +1,40 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ContactItem } from 'components/ContactItem/ContactItem';
 import { List } from './ContactList.styled';
-import { getContacts, getFilter } from 'redux/selectors';
-import { useSelector } from 'react-redux/es/exports';
+
+import { useDispatch, useSelector } from 'react-redux/es/exports';
+import { getAllContacts } from 'redux/operations';
+import { getVisibleContacts } from 'redux/selectors';
 
 export const ContactList = () => {
-  const contacts = useSelector(getContacts);
-  console.log('contacts', contacts);
-  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
-  const getFilteredContacts = () => {
-    if (!filter) {
-      return contacts;
-    }
+  useEffect(() => {
+    dispatch(getAllContacts());
+  }, [dispatch]);
 
-    return contacts.filter(contact => {
-      return contact.name.toLowerCase().includes(filter.toLowerCase());
-    });
-  };
+  const visibleContacts = useSelector(getVisibleContacts);
+  console.log('visibleContacts', visibleContacts);
 
-  const visibleContacts = getFilteredContacts();
+  // const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   dispatch(getAllContacts());
+  // }, [dispatch]);
+
+  // const contacts = useSelector(state => state.contacts);
+  // console.log('contacts', contacts);
   return (
     <>
-      {contacts.length > 0 && (
+      {/* {visibleContacts.isLoading && <div>Loading...</div>} */}
+      {
         <List>
-          {visibleContacts.map(contact => (
-            <ContactItem key={contact.id} contact={contact} />
-          ))}
+          {visibleContacts.map(contact => {
+            return <ContactItem key={contact.id} contact={contact} />;
+          })}
         </List>
-      )}
+      }
+      {/* {visibleContacts.error && <div>Error: {visibleContacts.error}</div>} */}
     </>
   );
 };
