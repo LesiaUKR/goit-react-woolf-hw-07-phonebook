@@ -23,4 +23,3 @@ export const store = configureStore({
       },
     }),
 });
-console.log('store', store);

@@ -4,9 +4,15 @@ import { HiUser } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { deleteContact } from 'redux/operations';
+import { Notify } from 'notiflix';
 
 export const ContactItem = ({ contact: { id, name, number } }) => {
   const dispatch = useDispatch();
+
+  const handleDeleteContact = () => {
+    dispatch(deleteContact(id));
+    Notify.failure(`Contact deleted`);
+  };
 
   return (
     <ListItem>
@@ -14,11 +20,7 @@ export const ContactItem = ({ contact: { id, name, number } }) => {
       <ListItemName>
         {name}: {number}
       </ListItemName>
-      <DeleteButton
-        type="button"
-        id={id}
-        onClick={() => dispatch(deleteContact(id))}
-      >
+      <DeleteButton type="button" id={id} onClick={handleDeleteContact}>
         <MdDelete />
         Delete
       </DeleteButton>

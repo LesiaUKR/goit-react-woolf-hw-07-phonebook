@@ -1,50 +1,37 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
-import {
-  addContact,
-  deleteContact,
-  editContacts,
-  getAllContacts,
-} from './operations';
+import { addContact, deleteContact, getAllContacts } from './operations';
 
 const initialState = { items: [], isLoading: false, error: null };
 
 const getActions = type =>
-  isAnyOf(
-    getAllContacts[type],
-    addContact[type],
-    deleteContact[type],
-    editContacts[type]
-  );
+  isAnyOf(getAllContacts[type], addContact[type], deleteContact[type]);
 
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
   extraReducers: builder =>
     builder
-      .addCase(getAllContacts.fulfilled, (state, action) => {
-        state.items = action.payload;
+      .addCase(getAllContacts.fulfilled, (state, { payload }) => {
+        state.items = payload;
+        state.error = null;
+        state.isLoading = false;
       })
-      .addCase(addContact.fulfilled, (state, action) => {
-        state.items.unshift(action.payload);
+      .addCase(addContact.fulfilled, (state, { payload }) => {
+        state.items.unshift(payload);
+        state.error = null;
+        state.isLoading = false;
       })
-      .addCase(deleteContact.fulfilled, (state, action) => {
-        const index = state.items.findIndex(
-          contact => contact.id === action.payload.id
-        );
-        state.items.splice(index, 1);
-      })
-      .addCase(editContacts.fulfilled, (state, action) => {
-        const updatedContact = action.payload;
-        state.items = state.items.map(item =>
-          item.id === updatedContact.id ? updatedContact : item
-        );
+      .addCase(deleteContact.fulfilled, (state, { payload }) => {
+        state.items = state.items.filter(({ id }) => id !== payload.id);
+        state.error = null;
+        state.isLoading = false;
       })
       .addMatcher(getActions('pending'), state => {
         state.isLoading = true;
       })
-      .addMatcher(getActions('rejected'), (state, action) => {
+      .addMatcher(getActions('rejected'), (state, { payload }) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = payload;
       })
       .addMatcher(getActions('fulfilled'), state => {
         state.isLoading = false;

@@ -1,9 +1,8 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getContacts } from '../../redux/selectors';
+import { getContacts, selectIsLoading } from '../../redux/selectors';
 import { Formik } from 'formik';
 import { HiUserAdd } from 'react-icons/hi';
 import {
@@ -14,6 +13,7 @@ import {
   ErrorMessage,
 } from 'components/ContactsForm/ContactsForm.styled.js';
 import { addContact } from 'redux/operations';
+import { Notify } from 'notiflix';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -29,17 +29,25 @@ const validationSchema = Yup.object().shape({
 export const ContactsForm = () => {
   const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
 
-  const handleSubmit = (values, actions) => {
-    const normName = values.name.toLowerCase();
+  const handleSubmit = ({ name, number }, actions) => {
+    const normName = name.toLowerCase();
     const existstName = contacts.find(
       ({ name }) => name.toLowerCase() === normName
     );
     if (existstName) {
-      return Notify.info(`This name is already in contacts!`);
+      Notify.warning(`This ${name} is already in contacts!`);
+      return;
     }
 
-    dispatch(addContact(values));
+    dispatch(addContact({ name, number }))
+      .then(() => {
+        Notify.success(`New contact added`);
+      })
+      .catch(() => {
+        Notify.failure(`Something went wrong`);
+      });
     actions.resetForm();
   };
 
@@ -75,7 +83,7 @@ export const ContactsForm = () => {
           />
           <ErrorMessage name="number" component="span" />
         </FormLabel>
-        <AddButton type="submit">
+        <AddButton type="submit" disabled={isLoading}>
           <HiUserAdd />
           Add contact
         </AddButton>
