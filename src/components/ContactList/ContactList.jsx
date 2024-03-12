@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 export const ContactList = () => {
   const visibleContacts = useSelector(getVisibleContacts);
-  console.log('visibleContacts', visibleContacts);
 
   return (
     <List>

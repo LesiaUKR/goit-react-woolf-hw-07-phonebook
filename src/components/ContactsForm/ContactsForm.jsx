@@ -42,6 +42,7 @@ export const ContactsForm = () => {
     }
 
     dispatch(addContact({ name, number }))
+      .unwrap()
       .then(() => {
         Notify.success(`New contact added`);
       })

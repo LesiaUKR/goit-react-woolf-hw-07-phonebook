@@ -17,12 +17,14 @@ const App = () => {
   const isLoading = useSelector(selectIsLoading);
 
   useEffect(() => {
-    dispatch(getAllContacts());
+    dispatch(getAllContacts())
+      .unwrap()
+      .then()
+      .catch(error => {
+        console.error('Error retrieving contacts:', error);
+        Notify.failure('Error retrieving contacts');
+      });
   }, [dispatch]);
-
-  useEffect(() => {
-    if (error) Notify.error(error);
-  }, [error]);
 
   return (
     <Layout>
@@ -31,6 +33,7 @@ const App = () => {
       <ContactsForm />
       <Header>Contacts</Header>
       <Filter />
+      {error && <p>Error retrieving contacts: {error.toString()}</p>}
       {isLoading ? <Loader /> : contacts.length > 0 && <ContactList />}
     </Layout>
   );

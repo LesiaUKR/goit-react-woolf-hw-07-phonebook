@@ -10,8 +10,18 @@ export const ContactItem = ({ contact: { id, name, number } }) => {
   const dispatch = useDispatch();
 
   const handleDeleteContact = () => {
-    dispatch(deleteContact(id));
-    Notify.failure(`Contact deleted`);
+    dispatch(deleteContact(id))
+      .unwrap()
+      .then(() => {
+        Notify.failure(`Contact deleted`);
+      })
+      .catch(rejectedValueOrSerializedError => {
+        console.log(
+          'rejectedValueOrSerializedError',
+          rejectedValueOrSerializedError
+        );
+        Notify.failure(`Something went wrong`);
+      });
   };
 
   return (
