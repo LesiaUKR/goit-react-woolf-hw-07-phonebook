@@ -13,18 +13,12 @@ const contactsSlice = createSlice({
     builder
       .addCase(getAllContacts.fulfilled, (state, { payload }) => {
         state.items = payload;
-        state.error = null;
-        state.isLoading = false;
       })
       .addCase(addContact.fulfilled, (state, { payload }) => {
-        state.items.unshift(payload);
-        state.error = null;
-        state.isLoading = false;
+        state.items.push(payload);
       })
       .addCase(deleteContact.fulfilled, (state, { payload }) => {
         state.items = state.items.filter(({ id }) => id !== payload.id);
-        state.error = null;
-        state.isLoading = false;
       })
       .addMatcher(getActions('pending'), state => {
         state.isLoading = true;

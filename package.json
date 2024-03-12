@@ -5,7 +5,6 @@
   "homepage": "https://lesiaukr.github.io/goit-react-woolf-hw-07-phonebook/",
   "dependencies": {
     "@emotion/is-prop-valid": "^1.2.2",
-    "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
